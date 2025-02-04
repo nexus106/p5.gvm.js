@@ -52,7 +52,7 @@ gvm.setBPM(90); // BPMを90に変更
 - 例:
   -  BPMを120に設定し `leapNoise(8, 2, [0, 0])` とすると、BPM120のカウントで8拍中で後ろ2拍かけて0~1の中で次のランダムな値へと変移する値を取ることができます。`[0,0]`はシード値です。
 
-### 3. `recordKeyPressTime()`
+### 3. `tapTempo()`
 
 - 説明:
   - タップテンポでBPMを調整するための関数です。任意のイベントの元で関数を使用することで、タップテンポの機能を追加できます。
@@ -63,7 +63,7 @@ gvm.setBPM(90); // BPMを90に変更
   function keyPressed() {
     // TAPTEMPO_KEY で指定したキーを一定間隔で押すことでテンポを変更できます。
     if (keyCode === TAPTEMPO_KEY) {
-        gvm.recordKeyPressTime();
+        gvm.tapTempo();
     }
   }
   ```
