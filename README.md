@@ -1,100 +1,104 @@
 # p5.gvm.js
 
-`p5.gvm.js` は、視覚的なリズムを簡単に実現するためのp5.js向けライブラリです。このライブラリを使用すると、音楽的なテンポ（BPM）に基づいたアニメーションや動きを視覚的に表現できます。音を再生せずとも、リズミカルな視覚表現を作成することが可能です。
+`p5.gvm.js` is a library for p5.js that simplifies the creation of visual rhythms. With this library, you can visually represent animations and movements based on musical tempo (BPM). It allows you to create rhythmic visual expressions even without playing sound.
 
-## 基本的な使い方
+## Basic Usage
 
-### 1. GVMインスタンスの作成
+### 1. Creating a GVM Instance
 
-- ライブラリを使用するには、まずグローバルスコープでGVMクラスのインスタンスを作成します。
-- インスタンス作成時にBPM（テンポ）を指定します。
+- To use the library, first create an instance of the `GVM` class in the global scope.
+- Specify the BPM (tempo) when creating the instance.
 
-```javaScript
-let gvm = new GVM(120); // BPMを120に設定
+```javascript
+let gvm = new GVM(120); // Set BPM to 120
 ```
 
-### 2. BPMの変更
+### 2. Changing BPM
 
-作成後にBPMを変更したい場合は、setBPM()関数を使用します。
+If you want to change the BPM after creating the instance, use the `setBPM()` function.
 
-```javaScript
-gvm.setBPM(90); // BPMを90に変更
+```javascript
+gvm.setBPM(90); // Change BPM to 90
 ```
 
-## 関数リファレンス
+## Function Reference
 
 ### 1. `getPhase()`
-- 説明:
-  - 現在のフェーズ値（進行度）を取得します。
-  - この関数は、指定されたサイクル長（`cycleLength`）とイージングの持続時間（`easeDuration`）、およびイージング関数（`easeFunction`）に基づいて計算された値を返します。
-  - フェーズ値は整数部分（ベースフェーズ）と小数部分（イージング適用済みの進行度）で構成されます。
-  - デフォルトでは、1サイクルが8単位で進行し、そのうち最後の2単位がイージング適用区間となります。
 
-- 引数:
-  - `cycleLength`: サイクルの長さ（デフォルト値: `8`）。
-  - `easeDuration`: イージングの持続時間。サイクル長より小さい正の値である必要があります（デフォルト値: `2`）。
-  - `easeFunction`: 使用するイージング関数。デフォルトでは `Easing.easeInOutSine` が使用されます。
- 
-- 例:
-  -  BPMを120に設定し `getPhase(8, 2)` とすると、BPM120のカウントで8拍中で後ろ2拍かけて1増えていく値を取ることができます。
+- **Description**:  
+  Retrieves the current phase value (progress).  
+  This function returns a value calculated based on the specified cycle length (`cycleLength`), easing duration (`easeDuration`), and easing function (`easeFunction`).  
+  The phase value consists of an integer part (base phase) and a fractional part (progress with applied easing).  
+  By default, one cycle progresses over 8 units, with easing applied during the last 2 units.
+
+- **Arguments**:  
+  - `cycleLength`: Length of the cycle (default: `8`).  
+  - `easeDuration`: Duration of easing. Must be a positive value smaller than the cycle length (default: `2`).  
+  - `easeFunction`: Easing function to use. Defaults to `Easing.easeInOutSine`.
+
+- **Example**:  
+  Setting BPM to 120 and calling `getPhase(8, 2)` will return a value that progresses over 8 beats at BPM 120, with easing applied over the last 2 beats.
 
 ### 2. `leapNoise()`
-- 説明:
-  - リズム（BPM）と連動したPerlin Noise値を生成します。
-  - 現在のサイクルと次のサイクルで生成されるノイズ値をイージングによって補間し、滑らかなノイズパターンを得ることができます。
-  
-- 引数:
-  - `cycleLength`: サイクルの長さ（デフォルト値: `8`）。
-  - `easeDuration`: イージングの持続時間。サイクル長より小さい正の値である必要があります（デフォルト値: `2`）。
-  - `seed`: ノイズ生成用のシード値。2つの要素 `[x, y]` を持つ配列で指定します。
-  - `easeFunction`: 使用するイージング関数。デフォルトでは `Easing.easeInOutSine` が使用されます。
- 
-- 例:
-  -  BPMを120に設定し `leapNoise(8, 2, [0, 0])` とすると、BPM120のカウントで8拍中で後ろ2拍かけて0~1の中で次のランダムな値へと変移する値を取ることができます。`[0,0]`はシード値です。
+
+- **Description**:  
+  Generates Perlin Noise values synchronized with rhythm (BPM).  
+  This function interpolates noise values generated for the current and next cycles using easing, resulting in smooth noise patterns.
+
+- **Arguments**:  
+  - `cycleLength`: Length of the cycle (default: `8`).  
+  - `easeDuration`: Duration of easing. Must be a positive value smaller than the cycle length (default: `2`).  
+  - `seed`: Seed value for noise generation. Specify as an array with two elements `[x, y]`.  
+  - `easeFunction`: Easing function to use. Defaults to `Easing.easeInOutSine`.
+
+- **Example**:  
+  Setting BPM to 120 and calling `leapNoise(8, 2, [0, 0])` will return a value that transitions smoothly between random values within a range of 0–1 over an 8-beat cycle at BPM 120, with easing applied over the last 2 beats. `[0,0]` represents the seed value.
 
 ### 3. `tapTempo()`
 
-- 説明:
-  - タップテンポでBPMを調整するための関数です。任意のイベントの元で関数を使用することで、タップテンポの機能を追加できます。
-  - 直近5回のタップでBPMを測定し、5秒以上経過したタップデータは削除しています。
+- **Description**:  
+  A function for adjusting BPM using tap tempo. By using this function in conjunction with specific events, you can add tap tempo functionality.  
+  The BPM is calculated based on the most recent five taps, and tap data older than five seconds is discarded.
 
-- 例:
-  ```javaScript
-  function keyPressed() {
-    // TAPTEMPO_KEY で指定したキーを一定間隔で押すことでテンポを変更できます。
+- **Example**:
+
+```javascript
+function keyPressed() {
+    // Pressing TAPTEMPO_KEY at regular intervals changes the tempo.
     if (keyCode === TAPTEMPO_KEY) {
         gvm.tapTempo();
     }
-  }
-  ```
+}
+```
 
-## イージング関数
+## Easing Functions
 
-このライブラリでは、以下のような多彩なイージング関数が利用可能です。これらはすべて静的メソッドとして提供され、引数として進行度（0〜1）を受け取り、それに対応する補間結果を返します。
+This library provides a variety of easing functions for smooth transitions. These are all available as static methods and take progress values (0–1) as arguments, returning interpolated results.
 
-### 主なイージング関数一覧
+### Main Easing Functions
 
-| 関数名                   | 説明                                                                 |
-|--------------------------|----------------------------------------------------------------------|
-| `Easing.easeInSine(x)`   | 緩やかに加速する動きを生成します。                                     |
-| `Easing.easeOutSine(x)`  | 緩やかに減速する動きを生成します。                                     |
-| `Easing.easeInOutSine(x)`| 加速と減速が滑らかにつながる動きを生成します。                         |
-| `Easing.easeInQuad(x)`   | 二次曲線的に加速する動きを生成します。                                 |
-| `Easing.easeOutQuad(x)`  | 二次曲線的に減速する動きを生成します。                                 |
-| `Easing.easeInOutQuad(x)`| 加速と減速が二次曲線的につながる動きを生成します。                     |
-| ...                      | その他、多くのイージング関数が利用可能です（詳細はコード参照）。           |
+| Function Name              | Description                                                         |
+|----------------------------|---------------------------------------------------------------------|
+| `Easing.easeInSine(x)`     | Generates motion that accelerates gradually.                        |
+| `Easing.easeOutSine(x)`    | Generates motion that decelerates gradually.                        |
+| `Easing.easeInOutSine(x)`  | Generates motion with smooth acceleration and deceleration.         |
+| `Easing.easeInQuad(x)`     | Generates motion that accelerates quadratically.                    |
+| `Easing.easeOutQuad(x)`    | Generates motion that decelerates quadratically.                    |
+| `Easing.easeInOutQuad(x)`  | Generates motion with quadratic acceleration and deceleration.      |
+| ...                        | Many other easing functions are available (see code for details).   |
 
-## ライセンス
+## License
 
 MIT License
 
-## 最新バージョン
+## Latest Version
 
 v1.3.1
 
-## 更新日
+## Last Updated
 
-2025.02.05
+2025.02.07
 
-## 作者
-きむらこうや
+## Author
+
+Koya Kimura
